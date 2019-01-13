@@ -18,12 +18,21 @@ public class ExcelGenerator {
         XSSFSheet sheet = workbook.createSheet("test");
         ExcelImpl excel = new ExcelImpl();
         excel.setList();
+        ItemSet itemSet = new ItemSet();
+        int size = itemSet.getItems().size();
         Object[][] testing = {
                 {excel.getList().get(0),excel.getIntegers().get(0)},
                 {excel.getList().get(1),excel.getIntegers().get(1)},
                 {excel.getList().get(2),excel.getIntegers().get(2)},
                 {excel.getList().get(3),excel.getIntegers().get(3)}
         };
+        Item[][][] test2 = new Item[][][];
+        for(int i =0; i<size; i++){
+            Item[][] test = {
+                    {itemSet.getItems().get(i)},
+            };
+
+                }
         /*int rowNum = 0;
         Row row = sheet.createRow(rowNum++);
         int colNum = 0;
