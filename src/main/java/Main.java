@@ -6,16 +6,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args)throws IOException, InvalidFormatException {
-        //ExcelGenerator excelGenerator = new ExcelGenerator();
-       // excelGenerator.create();
-        ItemSet itemSet = new ItemSet();
-        for(int i = 0; i<10; i++) {
-            Item item = new Item();
-            item.setName(Integer.toString(i));
-            item.setPrice(BigDecimal.valueOf(i * 50));
-            item.setAmount((double) (100 * i));
-            itemSet.getItems().add(item);
-            System.out.println(item);
-        }
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        excelGenerator.create();
+
     }
 }
