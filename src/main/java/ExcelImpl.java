@@ -8,6 +8,6 @@ public class ExcelImpl implements Validator{
     String value;
     @Override
     public void valid(Object obj) {
-        System.out.println(value);
+
     }
 }

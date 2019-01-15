@@ -4,7 +4,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -13,19 +15,21 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelGenerator {
     public static final String xlsxPath = "./Test.xlsx";
-
-    @ExcelAdn(value = "test")
+    @ExcelAdn("Name")
     private String test = "String";
-    @ExcelAdn("test2")
+    @ExcelAdn("Value")
     private String test2 = "Big Decimal";
-    @ExcelAdn("test3")
+    @ExcelAdn("Amount")
     private String test3 = "Double";
+    XSSFWorkbook workbook = new XSSFWorkbook();
+    XSSFSheet sheet = workbook.createSheet("test");
 
     public void create()throws IOException, InvalidFormatException {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("test");
+
         ItemSet itemSet = new ItemSet();
+        List<Integer> integers = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
+            integers.add(i*213);
             Item item = new Item();
             item.setName(Integer.toString(i));
             item.setPrice(BigDecimal.valueOf(i * 50));
@@ -33,7 +37,7 @@ public class ExcelGenerator {
             itemSet.getItems().add(item);
         }
         int colNum = 0;
-        int rowNum = 1;
+        int rowNum = 0;
         Row firstRow = sheet.createRow(rowNum++);
         for (Field f : ExcelGenerator.class.getDeclaredFields()) {
             ExcelAdn excelAdn = f.getAnnotation(ExcelAdn.class);
@@ -43,6 +47,12 @@ public class ExcelGenerator {
                 System.out.println(excelAdn.value());
             }
         }
+        /*for(int i =0; i<integers.size();i++){
+            Row row = sheet.createRow(rowNum++);
+            colNum = 0;
+            Cell cell = row.createCell(colNum++);
+            cell.setCellValue(integers.get(i));
+        }*/
         for (Item objects : itemSet.getItems()) {
             Row row = sheet.createRow(rowNum++);
             colNum = 0;
@@ -52,11 +62,7 @@ public class ExcelGenerator {
             cell2.setCellValue(objects.getPrice().doubleValue());
             Cell cell3 = row.createCell(colNum++);
             cell3.setCellValue(objects.getAmount());
-
         }
-
-
-
 
         try {
             FileOutputStream outputStream = new FileOutputStream(xlsxPath);
@@ -69,7 +75,24 @@ public class ExcelGenerator {
         }
     }
 }
-
+/* public void createCollection(Collection<?> collection)throws IOException, InvalidFormatException{
+        int colNum = 0;
+        int rowNum = 0;
+        for(Object o:collection){
+            Row row = sheet.createRow(rowNum++);
+            Cell cell = row.createCell(colNum++);
+            cell.setCellValue(o.toString());
+        }
+        try {
+            FileOutputStream outputStream = new FileOutputStream(xlsxPath);
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 /*
         Iterator<Sheet> sheetIterator = workbook.sheetIterator();
         while (sheetIterator.hasNext()) {
