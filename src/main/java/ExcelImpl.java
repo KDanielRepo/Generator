@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ExcelImpl implements Validator{
+public class ExcelImpl {
     String value;
-    @Override
-    public void valid(Object obj) {
-
-    }
 }

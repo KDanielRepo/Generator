@@ -24,57 +24,40 @@ public class ExcelGenerator {
     XSSFWorkbook workbook = new XSSFWorkbook();
     XSSFSheet sheet = workbook.createSheet("test");
 
-    public void create()throws IOException, InvalidFormatException {
+    public void create() throws IOException, InvalidFormatException {
 
-        ItemSet itemSet = new ItemSet();
         List<Integer> integers = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            integers.add(i*213);
-            Item item = new Item();
-            item.setName(Integer.toString(i));
-            item.setPrice(BigDecimal.valueOf(i * 50));
-            item.setAmount((double) (100 * i));
-            itemSet.getItems().add(item);
+            integers.add(i * 213);
         }
-        int colNum = 0;
         int rowNum = 0;
-        Row firstRow = sheet.createRow(rowNum++);
+        int colNum = 0;
         for (Field f : ExcelGenerator.class.getDeclaredFields()) {
             ExcelAdn excelAdn = f.getAnnotation(ExcelAdn.class);
-            if(excelAdn != null){
-                Cell cell = firstRow.createCell(colNum++);
-                cell.setCellValue(excelAdn.value());
+            if (excelAdn != null) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(colNum++).setCellValue(excelAdn.value());
                 System.out.println(excelAdn.value());
             }
         }
-        /*for(int i =0; i<integers.size();i++){
-            Row row = sheet.createRow(rowNum++);
-            colNum = 0;
-            Cell cell = row.createCell(colNum++);
-            cell.setCellValue(integers.get(i));
-        }*/
-        for (Item objects : itemSet.getItems()) {
-            Row row = sheet.createRow(rowNum++);
-            colNum = 0;
-            Cell cell = row.createCell(colNum++);
-            cell.setCellValue(objects.getName());
-            Cell cell2 = row.createCell(colNum++);
-            cell2.setCellValue(objects.getPrice().doubleValue());
-            Cell cell3 = row.createCell(colNum++);
-            cell3.setCellValue(objects.getAmount());
+        for (Integer integer : integers) {
+            Row row1 = sheet.createRow(rowNum++);
+            colNum=0;
+            row1.createCell(colNum++).setCellValue(integer);
         }
 
-        try {
-            FileOutputStream outputStream = new FileOutputStream(xlsxPath);
-            workbook.write(outputStream);
-            workbook.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            try {
+                FileOutputStream outputStream = new FileOutputStream(xlsxPath);
+                workbook.write(outputStream);
+                workbook.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 /* public void createCollection(Collection<?> collection)throws IOException, InvalidFormatException{
         int colNum = 0;
         int rowNum = 0;

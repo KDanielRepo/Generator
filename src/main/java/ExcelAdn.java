@@ -5,7 +5,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(impl = ExcelImpl.class)
 public @interface ExcelAdn {
     String value();
 }
