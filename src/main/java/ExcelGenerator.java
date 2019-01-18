@@ -30,22 +30,28 @@ public class ExcelGenerator {
         for (int i = 0; i < 10; i++) {
             integers.add(i * 213);
         }
-        int rowNum = 0;
+
         int colNum = 0;
+        int rowNum = 0;
+        Row firstRow = sheet.createRow(rowNum++);
         for (Field f : ExcelGenerator.class.getDeclaredFields()) {
             ExcelAdn excelAdn = f.getAnnotation(ExcelAdn.class);
-            if (excelAdn != null) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(colNum++).setCellValue(excelAdn.value());
+            if(excelAdn != null){
+                Cell cell = firstRow.createCell(colNum++);
+                cell.setCellValue(excelAdn.value());
                 System.out.println(excelAdn.value());
             }
         }
-        for (Integer integer : integers) {
-            Row row1 = sheet.createRow(rowNum++);
-            colNum=0;
-            row1.createCell(colNum++).setCellValue(integer);
+        for (Integer objects : integers) {
+            Row row = sheet.createRow(rowNum++);
+            colNum = 0;
+            Cell cell = row.createCell(colNum++);
+            cell.setCellValue(objects);
+            Cell cell2 = row.createCell(colNum++);
+            cell2.setCellValue(objects);
+            Cell cell3 = row.createCell(colNum++);
+            cell3.setCellValue(objects);
         }
-
 
             try {
                 FileOutputStream outputStream = new FileOutputStream(xlsxPath);
