@@ -3,11 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import java.util.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -15,44 +11,49 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelGenerator {
     public static final String xlsxPath = "./Test.xlsx";
-    @ExcelAdn("Name")
-    private String test = "String";
-    @ExcelAdn("Value")
-    private String test2 = "Big Decimal";
-    @ExcelAdn("Amount")
-    private String test3 = "Double";
+
     XSSFWorkbook workbook = new XSSFWorkbook();
     XSSFSheet sheet = workbook.createSheet("test");
 
-    public void create() throws IOException, InvalidFormatException {
-
-        List<Integer> integers = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            integers.add(i * 213);
-        }
-
+    public void create() throws IOException, InvalidFormatException,IllegalAccessException,InstantiationException,NoSuchFieldException {
         int colNum = 0;
         int rowNum = 0;
         Row firstRow = sheet.createRow(rowNum++);
-        for (Field f : ExcelGenerator.class.getDeclaredFields()) {
+        for(int i=0; i<40;i++){
+            Row row = sheet.createRow(rowNum++);
+        }
+        for (Field f : Main.class.getDeclaredFields()) {
             ExcelAdn excelAdn = f.getAnnotation(ExcelAdn.class);
             if(excelAdn != null){
-                Cell cell = firstRow.createCell(colNum++);
+                Cell cell = firstRow.createCell(colNum);
                 cell.setCellValue(excelAdn.value());
                 System.out.println(excelAdn.value());
+                if(f.isAnnotationPresent(ExcelAdn.class)){
+                    try{
+                        rowNum=1;
+                        f.setAccessible(true);
+                        if(Collection.class.isAssignableFrom(f.getType())){
+                            Collection<?> list = (Collection<?>) f.get(new Main());
+                            for(Object s:list){
+                                Row row1 = sheet.getRow(rowNum++);
+                                Cell cell1 = row1.createCell(colNum);
+                                cell1.setCellValue(s.toString());
+                            }
+                            colNum++;
+                        }else{
+                            Object obj = f.get(new Main());
+                            Row row1 = sheet.getRow(rowNum++);
+                            Cell cell1 = row1.createCell(colNum);
+                            cell1.setCellValue(obj.toString());
+                            colNum++;
+                        }
+                    }catch (IllegalAccessException e){
+                        e.printStackTrace();
+                    }
+                }
+
             }
         }
-        for (Integer objects : integers) {
-            Row row = sheet.createRow(rowNum++);
-            colNum = 0;
-            Cell cell = row.createCell(colNum++);
-            cell.setCellValue(objects);
-            Cell cell2 = row.createCell(colNum++);
-            cell2.setCellValue(objects);
-            Cell cell3 = row.createCell(colNum++);
-            cell3.setCellValue(objects);
-        }
-
             try {
                 FileOutputStream outputStream = new FileOutputStream(xlsxPath);
                 workbook.write(outputStream);
