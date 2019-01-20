@@ -33,11 +33,11 @@ public class ExcelGenerator {
                         rowNum=1;
                         f.setAccessible(true);
                         if(Collection.class.isAssignableFrom(f.getType())){
-                            Collection<?> list = (Collection<?>) f.get(new Main());
-                            for(Object s:list){
+                            Collection<?> collection = (Collection<?>) f.get(new Main());
+                            for(Object o:collection){
                                 Row row1 = sheet.getRow(rowNum++);
                                 Cell cell1 = row1.createCell(colNum);
-                                cell1.setCellValue(s.toString());
+                                cell1.setCellValue(o.toString());
                             }
                             colNum++;
                         }else{
